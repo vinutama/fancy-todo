@@ -24,4 +24,6 @@ router.put('/:userId/:projectId', checkMembers, projectController.inviteMember)
 /*add task to project*/
 router.post('/task/:projectId', checkMembers, projectController.addTaskToProject)
 
+router.delete('/:userId/:id', checkProjectMaster, projectController.kickUser)
+
 module.exports = router

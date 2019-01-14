@@ -109,5 +109,24 @@ module.exports = {
                 msg: `Internal server error`
             })
         })
+    },
+    kickUser: function(req, res) {
+        const id = req.params.userId
+            User
+                .findOneAndDelete({ _id: req.params.userId })
+                .then(user => {
+                    return Project
+                        .findOneAndUpdate({ _id: req.params.id }, { $pull: { members: id }}, { new: true })
+                })
+                .then(newProject => {
+                    res.status(200).json({
+                        msg: `User has been kicked out!`
+                    })
+                })
+                .catch(err => {
+                    res.status(500).json({
+                        msg: `Internal server error`
+                    })
+                })
     }
 }

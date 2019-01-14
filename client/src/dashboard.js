@@ -205,12 +205,6 @@
             var oneDay = 24*60*60*1000;
             var calcDays = Math.abs(deadlineDay) - today
             var diffDays = Math.round(calcDays/oneDay)
-            console.log(diffDays, 'diff day')
-            console.log(status, 'statustodo')
-            console.log(deadlineDay, 'deadline, day')
-            console.log(deadlineMonth, 'deadline month')
-            console.log(deadlineYear, 'deadline year')
-            console.log(today, 'today')
             if(deadlineDay[0]==0) {
                 deadlineDay = deadlineDay[1]
             }
@@ -547,6 +541,13 @@
             .done(project => {
                 $('#projects').hide()
                 $('#detailProject').show()
+                $('#detailProj').empty()
+                $('#notInvitedMember').empty()
+                findAllProjectTask(id)
+                $('#listProjTodo').show()
+                $(document).ready(function(){
+                    $('select').formSelect();
+                  });
                 $('#detailProj').append(`
                 <div class="card blue darken-1">
                 <div class="card-content white-text">
@@ -555,7 +556,35 @@
                 <span class="card-title">${project.name}</span>
                 <div class="col s12 m6 l6">
                 <div class="card grey darken-1" style="margin-top: 15px;" id="todoOnProject">
-            
+                <h5>List Todo</h5>
+                <ul id="listProjTodo"></ul>
+                <form class="col s12" id="addNewTodoProj" style="display: none;">
+                <div class="row">
+                    <h3>What do you want to do??</h3>
+                    <div class="input-field col s12">
+                    <input id="nameTodoProj" type="text">
+                    <label for="nameTodoProj">Name</label>
+                    <span class="helper-text" data-error="" data-success="right" id="errName"></span>
+                    </div>
+                    <div class="input-field col s12">
+                    <input id="descTodoProj" type="text">
+                    <label for="descTodoProj">Description</label>
+                    </div>
+                    <div class="input-field col s12">
+                    <input id="deadlineTodoProj" type="date">
+                    <label for="deadlineTodoProj">Deadline</label>  
+                    </div>                           
+                    <div class="input-field col s12">
+                        <select id="statusTodoProj">
+                        <option value="" disabled selected>Choose your status todo</option>
+                        <option value="on-progress">Doing</option>
+                        <option value="finish">Done</option>
+                        </select>
+                    </div>
+                    <a class="waves-effect waves-light btn red" onclick="addNewTodoOnProject('${project._id}')"><i class="material-icons right">send</i>Submit</a>
+                </div>
+        </form>
+               
                 </div>
                 </div>
                 <div class="col s12 m6 l6">
@@ -565,13 +594,16 @@
                 <ul id="listMember">
                 Member Lists
                 </ul>
+                <ul id="notInvitedMember">
+                </ul>
                 </div>
                 </div>
                 </div>
                 </div>
                 <div class="card-action">
-                <a class="waves-effect waves-light btn green" onclick="deleteProject('${project._id}')">Add new todo</a>
-                <a class="waves-effect waves-light btn modal-trigger black" href="#triggerInvite">Invite new member</a>
+                <a class="waves-effect waves-light btn green" onclick="trigger()">Add new todo</a>
+                <a class="waves-effect waves-light btn black" onclick="listInviteUsers('${project._id}')">Invite new member</a>
+                <a class="waves-effect waves-light btn grey" onclick="projectDetail('${project._id}')">Member List</a>
                 <a class="waves-effect waves-light btn red delete" onclick="deleteProject('${project._id}')">Delete</a>
                 </div>
                 </div>`)
@@ -585,19 +617,97 @@
                 M.toast({html: toastHTML});
             })
         }
-        function listUser() {
+        function listInviteUsers (id) {
+            $('#notInvitedMember').empty()
+           $.ajax({
+               url: `http://localhost:3000/users/${id}`,
+               method: `GET`,
+               headers: {
+                   token: localStorage.getItem('token')
+               }
+           })
+           .done(users => {
+            $('#notInvitedMember').append(`Invite new member`)
+               users.forEach((val, index) => {
+                   $('#notInvitedMember').append(`
+                   <li>${index+1}. ${val.name}</li>
+                   <a class="waves-effect waves-light btn black" onclick="inviteUser('${val._id}', '${id}')">Invite</a>`)
+               })
+               $('#listMember').hide()
+               $('#notInvitedMember').show()
+           })
+           .fail(err => {
+               var toastHTML = `<span>${err.responseJSON.msg}</span>`;
+               M.toast({html: toastHTML});
+           })
+        }
+        function inviteUser (userId, projectId) {
             $.ajax({
-                url: `http://localhost:3000/users`,
+                url: `http://localhost:3000/projects/${userId}/${projectId}`,
+                method: `PUT`,
                 headers: {
                     token: localStorage.getItem('token')
                 }
             })
-            .done(users => {
-                
+            .done(user => {
+                $('#notInvitedMember').hide()
+                $('#listMember').show()
+                var toastHTML = `<span>User invited!</span>`;
+                M.toast({html: toastHTML});
             })
             .fail(err => {
                 var toastHTML = `<span>${err.responseJSON}</span>`;
                 M.toast({html: toastHTML});
+            })
+        }
+
+        
+        function trigger() {
+            event.preventDefault()
+            $('#addNewTodoProj').show()
+            $('#listProjTodo').hide()
+        }
+        function addNewTodoOnProject(id) {
+            event.preventDefault()
+           $.ajax({
+            url: `http://localhost:3000/projects/task/${id}`,
+            method: `POST`,
+            headers: {
+                token: localStorage.getItem('token')
+            },
+            data: {
+                name: $('#nameTodoProj').val(),
+                description: $('#descTodoProj').val(),
+                deadline: $('#deadlineTodoProj').val(),
+                status: $('#statusTodoProj').val()
+            }
+        })
+        .done(todo => {
+            $('#addNewTodoProj').hide()
+            $('#listProjTodo').show()
+        })
+        .fail(err => {
+            console.log(err)
+        })
+        }
+        function findAllProjectTask (id) {
+            $.ajax({
+                url: `http://localhost:3000/tasks/project/${id}`,
+                headers: {
+                    token: localStorage.getItem('token')
+                }
+            })
+            .done(tasks => {
+                $('#addNewTodoProj').hide()
+                tasks.forEach((val, index) => {
+                    $('#listProjTodo').append(`<li> Task Name: ${val.name}<br>
+                                                    User: ${val.userId.name}</li>`)
+                })
+                $('#listProjTodo').show()
+              
+            })
+            .fail(err => {
+                console.log(err)
             })
         }
         

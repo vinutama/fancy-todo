@@ -110,11 +110,21 @@ module.exports = {
         .findOne({ _id: req.params.projectId })
         .then(project => {
             User
-                .find({ _id: project.members })
+                .find({ _id: { $ne: project.members } })
                 .then(users => {
-                    Project 
-                        .find({ _id})
+                    console.log(users)
+                    res.status(200).json(users)
                 })
+                .catch(err => {
+                    res.status(500).json({
+                        msg: `Internal server error`
+                    })
+                })
+        })
+        .catch(err => {
+            res.status(500).json({
+                msg: `Internal server error`
+            })
         })
     }
 }

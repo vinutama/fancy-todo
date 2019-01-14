@@ -21,5 +21,9 @@ router.delete('/:id', taskController.deleteTask)
 /*Edit task*/
 router.put('/:id', taskController.editTask)
 
+router.get('/project/:projectId', taskController.findTaskProject)
+
+
+
 
 module.exports = router

@@ -78,6 +78,20 @@ module.exports = {
                 res.status(500).json(err.message)
             })
     },
+    findTaskProject: function(req, res) {
+        Task
+            .find({ projectId: req.params.projectId })
+            .populate('userId')
+            .then(tasks => {
+                console.log(tasks)
+                res.status(200).json(tasks)
+            })
+            .catch(err => {
+                res.status(500).json({
+                    msg: `Internal server error`
+                })
+            })
+    }
     
 
 }
