@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<div lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="google-signin-client_id" content="732276728690-lr00c7m1lqi2ag1fuba95j876kcugtpf.apps.googleusercontent.com">
+    <script src="https://code.jquery.com/jquery-3.3.1.js"integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link rel="stylesheet" href="./src/style.css">
+    <title>Document</title>
+    <nav>
+        <div class="nav-wrapper">
+          <a href="#" class="brand-logo center"><img src="./src/assets/todofancy.png" style="max-height: 55%; max-width: 55%;"></a>
+         
+          <ul id="nav-mobile" class="left hide-on-med-and-down">
+            <li><a class="home">Home</a></li>
+            <li><a class="register">Register</a></li>
+            <li><a class="login">Login</a></li>
+            <li><a class="logout" id="clickLogout">Logout</a></li>
+          </ul>
+        </div>
+      </nav>
+</head>
+
+        <div class="parallax-container"> 
+        <div class="parallax" ><img src="./src/assets/todo-list.png"></div>
+        </div>
+    <div class="section white">
+        <div class="row container">  
+            <h4 id="home">Make Your Project Planning & Organization easier with TodoFancy</h4>   
+            <div class="container" id="desc">
+                <div class="description">
+                    <h5>Status Todo Description</h5>
+                    <div class="stat danger">
+                            <p>Danger</p>
+            
+                    </div>
+                    <div class="stat warning">
+                            <p>Warning</p>
+                    </div>
+                    <div class="stat save">
+                            <p>Save</p>
+                    </div>
+                    <div class="stat done">
+                            <p>Finish</p>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <div class="row">
+                    <form class="col s12" id="formRegister" style="display: none">
+                <div class="row">
+                    <h3>Register Here!!</h3>
+                    <div class="input-field col s12">
+                    <input id="name" type="text">
+                    <label for="name">Name</label>
+                    <span class="helper-text" data-error="" data-success="right" id="errName"></span>
+                    </div>
+                    <div class="input-field col s12">
+                    <input id="email" type="email">
+                    <label for="email">Email</label>
+                    <span class="helper-text" data-error="" data-success="right" id="errEmail"></span>
+                    </div>
+                    <div class="input-field col s12">
+                    <input id="password" type="password">
+                    <label for="password">Password</label>
+                    </div>
+                </div>
+                    <a class="waves-effect waves-light btn" id="clickRegister"><i class="material-icons right">send</i>Submit</a>
+                    </form>
+                    <form class="col s12" id="formLogin" style="display: none">
+                    <div class="row">
+                        <h3>Login Here!!</h3>
+                        <div class="input-field col s12">
+                        <input id="emailLogin" type="email">
+                        <label for="email">Email</label>
+                        <span class="helper-text" data-error="" data-success="right" id="errName"></span>
+                        </div>
+                        <div class="input-field col s12">
+                        <input id="passwordLogin" type="password">
+                        <label for="password">Password</label>
+                        </div>
+                    </div>
+                        <a class="waves-effect waves-light btn" id="clickLogin"><i class="material-icons right">send</i>Submit</a>
+                        <br>
+                        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                    </form>
+                   <div class="row" id="userLogin">
+                        <a class="waves-effect waves-light btn blue" id="clickNewTodo" style="margin-right: 20px; display: none"><i class="material-icons right">playlist_add</i>Add New Todo</a>
+                        <a class="waves-effect waves-light btn blue" id="myListTodo" style="margin-right: 20px;"><i class="material-icons right">list</i>My List Todo</a>
+                        <a class="waves-effect waves-light btn blue" id="myListProject" style="margin-right: 20px;"><i class="material-icons right">list</i>My Projects</a>
+                        <a class="waves-effect waves-light btn blue" id="clickNewProject" style="margin-right: 20px; display: none;"><i class="material-icons right">playlist_add</i>Add New Project</a>
+                       <div class="row" id="todos" style="display: none;">
+                           <div class="col s12 m6 l6">
+                            <h4>Your On-Progress Todo List</h4>
+                             <div style="display: none" id="listTodo">
+                             </div>
+                           </div>
+                           <div class="col s12 m6 l6">
+                            <h4>Your Finished Todo List</h4>
+                            <div style="display: none; padding-top:28px;" id="listDoneTodo"></div>
+                           </div>
+                       </div>
+                       <div class="center">
+                           <div class="row" id="projects" style="display: none">
+                                <div class="col s12 m12 l12">
+                                <h4>Your Project Lists</h4>
+                                <div style="display: none" id="listProject">
+                                </div>
+                                </div>
+                            </div>
+                            <div class="row" id="detailProject" style="display: none">
+                                    <div class="col s12 m12 l12">
+                                    <h4>Your Project Detail</h4>
+                                    <div style="display: none" id="detailProj">
+                                    </div>
+                                    </div>
+                            </div>
+                       </div>
+                    </div>
+                   </div>
+                    <form class="col s12" id="formNewTodo" style="display: none">
+                        <div class="row">
+                            <h3>What do you want to do??</h3>
+                            <div class="input-field col s12">
+                            <input id="nameTodo" type="text">
+                            <label for="nameTodo">Name</label>
+                            <span class="helper-text" data-error="" data-success="right" id="errName"></span>
+                            </div>
+                            <div class="input-field col s12">
+                            <input id="descTodo" type="text">
+                            <label for="descTodo">Description</label>
+                            </div>
+                            <div class="input-field col s12">
+                            <input id="deadlineTodo" type="date">
+                            <label for="deadlineTodo">Deadline</label>  
+                            </div>                           
+                            <div class="input-field col s12">
+                                <select id="statusTodo">
+                                <option value="" disabled selected>Choose your status todo</option>
+                                <option value="on-progress">Doing</option>
+                                <option value="finish">Done</option>
+                                </select>
+                            </div>
+                            <a class="waves-effect waves-light btn red" id="submitTodo"><i class="material-icons right">send</i>Submit</a>
+                        </div>
+                    </form>
+                    <form class="col s12" id="formNewProject" style="display: none">
+                            <div class="row">
+                                <h3>Project Name</h3>
+                                <div class="input-field col s12">
+                                <input id="nameProject" type="text">
+                                <label for="nameProject">Name</label>
+                                </div>
+                                <a class="waves-effect waves-light btn red" id="submitProject"><i class="material-icons right">send</i>Submit</a>
+                            </div>
+                        </form>
+                </div>
+            </div>
+            <div id="updateTodo">
+                
+            </div>
+            </div>
+        </div>
+    </div>
+    
+      <div class="parallax-container">
+        <div class="parallax"><img src="./src/assets/todo-list2.jpg">
+        </div>
+        <div id="triggerInvite" class="modal">
+                <div class="modal-content">
+                  <ul id="userList">
+                    
+                  </ul>
+                </div>
+                <div class="modal-footer">
+                  <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+                </div>
+              </div>
+</body>
+
+<script>
+function onSignIn(googleUser) {
+  var profile = googleUser.getBasicProfile();
+  var id_token = googleUser.getAuthResponse().id_token
+  $.ajax({
+      url:`http://localhost:3000/users/googleLogin`,
+      method: `POST`,
+      data: {
+          gToken: id_token
+      }
+  })
+  .done((gToken) => {
+      console.log(gToken)
+      localStorage.setItem('token', gToken.token)
+                getListTodo()
+                $('#formLogin').hide()
+                $('.logout').show()
+                $('#desc').show()
+                $('.register').hide()
+                $('.login').hide()
+                $('#userLogin').show()
+                $('#listTodo').show()
+                $('#listDoneTodo').show()
+      var toastHTML = `<span>${gToken.msg}</span>`;
+      M.toast({html: toastHTML});
+  })
+  .fail((err) => {
+      console.log(err)
+  })
+}
+</script>
+
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<script>
+  $(document).ready(function(){
+    $('.parallax').parallax();
+  });
+  $(document).ready(function(){
+    $('select').formSelect();
+  });
+  $(document).ready(function(){
+    $('.modal').modal();
+  });
+ 
+</script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js"></script>
+<script src="./src/dashboard.js"></script>
+
+</html>
